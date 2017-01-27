@@ -1,7 +1,14 @@
 'use strict';
 let dump = require('var-dump')({'silence': false});
 
-let a = [
+/**
+ * We need list of empty rooms to implement.
+ *
+ * Also need wall position in 2D matrix. But,
+ * I didn't have time yet to implement wall
+ * coordinate.
+ */
+let empty_room_a = [
           {i: 0, j: 0},
           {i: 0, j: 1},
           {i: 0, j: 2},
@@ -13,7 +20,7 @@ let a = [
           {i: 2, j: 2}
 ];
 
-let b = [
+let empty_room_b = [
           {i: 0, j: 0},
           {i: 0, j: 1},
           {i: 1, j: 0},
@@ -21,6 +28,14 @@ let b = [
 ];
 
 
+/**
+ * We will check whether on a row (or column)
+ * in within line-of-sight. We can add a case
+ * if there is a wall within line-of-sight
+ *
+ * The strategy is to ignore further row/column when we
+ * meet a wall.
+ */
 function filterRow(point) {
   return function filterAgainst(against) {
     if (point.i == against.i || point.j == against.j) {
@@ -30,6 +45,10 @@ function filterRow(point) {
   }
 }
 
+/**
+ * This will create list of possible value of
+ * gunner position.
+ */
 function recursiveTree(arr) {
   return arr.map( function (el, ix, ar) {
 
@@ -42,3 +61,21 @@ function recursiveTree(arr) {
   });
 }
 
+/**
+ * Then, we should traverse through recursive tree,
+ * while maintaining its parent to list all possible
+ * gunner position.
+ */
+let gunner_position = recursiveTree(empty_room_a);
+dump(gunner_position);
+
+/** 
+ * The deepest tree will contain the most possible
+ * gunner in an arena.
+ *
+ * I did implement a naiive implementation in rust
+ * and come into 13 gunner. But, more thorough (correct)
+ * implementation is to use recursiveTree and
+ * tree traversal to list all possible value to place a
+ * gunner.
+ */
